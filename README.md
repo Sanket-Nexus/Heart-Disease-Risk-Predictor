@@ -2,6 +2,10 @@
 
 A complete Flask web application for heart disease risk prediction using multiple machine learning models, fuzzy logic, feature selection, data augmentation, and an ensemble stacking layer.
 
+## Live Demo
+
+- https://heart-disease-risk-predictor-g82o.onrender.com/
+
 ## What This Project Does
 
 The app lets a user enter patient information and predicts the probability of heart disease. It also shows:
