@@ -1,21 +1,21 @@
 {
   "ANN": {
-    "accuracy": 0.9,
-    "precision": 0.9074,
-    "recall": 0.8909,
-    "f1": 0.8991
+    "accuracy": 0.9636,
+    "precision": 0.9811,
+    "recall": 0.9455,
+    "f1": 0.963
   },
   "Random Forest": {
-    "accuracy": 0.9909,
-    "precision": 1.0,
+    "accuracy": 0.9864,
+    "precision": 0.9908,
     "recall": 0.9818,
-    "f1": 0.9908
+    "f1": 0.9863
   },
   "Fuzzy Logic": {
-    "accuracy": 0.4818,
-    "precision": 0.4892,
-    "recall": 0.8273,
-    "f1": 0.6149
+    "accuracy": 0.4864,
+    "precision": 0.492,
+    "recall": 0.8364,
+    "f1": 0.6195
   },
   "SVM": {
     "accuracy": 0.9773,

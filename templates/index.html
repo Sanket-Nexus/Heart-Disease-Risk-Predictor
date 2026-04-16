@@ -3,335 +3,451 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Heart Disease Risk Predictor</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}"
-    />
+    <title>CardioPredict — Heart Disease Risk Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
-    <div class="page-shell">
-      <div class="hero-panel">
-        <p class="eyebrow">Clinical Decision Support</p>
-        <h1>Heart Disease Risk Predictor</h1>
-        <p class="hero-copy">
-          Enter a patient profile to estimate heart disease probability using an
-          ensemble of ANN, Random Forest, Fuzzy Logic, and SVM models.
-          Browse the training data, generate sample patient values, add new
-          labeled rows from the website, and retrain directly from the app.
-        </p>
-        <div class="hero-highlights">
-          <div>
-            <span>4 Models</span>
-            <small>Ensemble-based risk estimation</small>
+
+    <!-- ═══════════════════════════════════════════ NAVIGATION ═══ -->
+    <nav class="site-nav">
+      <div class="nav-inner">
+        <div class="nav-brand">
+          <svg class="brand-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="#0B2545"/>
+            <path d="M20 32C20 32 8 23.5 8 14.5C8 10.36 11.36 7 15.5 7C17.9 7 20.05 8.13 21.2 9.9C22.35 8.13 24.5 7 26.9 7C31.04 7 34.4 10.36 34.4 14.5C34.4 23.5 22.4 32 20 32Z" fill="#E53935" fill-opacity="0.2" stroke="#EF5350" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M6 16H11.5L14 10.5L18 22L20.5 14L22.5 16H29" stroke="#64B5F6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-name">CardioPredict</span>
+            <span class="brand-sub">Clinical Decision Support</span>
           </div>
-          <div>
-            <span>Data Explorer</span>
-            <small>Inspect raw, cleaned, augmented, and website-added rows</small>
+        </div>
+        <div class="nav-pills">
+          <span class="nav-pill">4-Model Ensemble</span>
+          <span class="nav-pill nav-pill-teal">SHAP · LIME · Explainable AI</span>
+          <span class="nav-pill nav-pill-blue">Live Retraining</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════ HERO ═══ -->
+    <header class="site-hero">
+      <div class="hero-ecg-line"></div>
+      <div class="hero-inner">
+        <div class="hero-content">
+          <p class="hero-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6.25" stroke="currentColor" stroke-width="1.2"/><path d="M3.5 7H5.5L6.5 4.5L8 9L9 6.5L9.6 7H10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Evidence-Based Cardiovascular Risk Estimation
+          </p>
+          <h1 class="hero-title">Heart Disease<br/><em>Risk Predictor</em></h1>
+          <p class="hero-desc">
+            Enter a patient profile to estimate heart disease probability using an ensemble of ANN, Random Forest, Fuzzy Logic, and SVM models. Browse training data, generate sample values, add labeled rows, and retrain models directly from this platform.
+          </p>
+        </div>
+        <div class="hero-stats-col">
+          <div class="hero-stat-card">
+            <div class="hsc-icon hsc-blue">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 9H12.5M5.5 12H9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M5.5 6H8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <p class="hsc-val">4 Models</p>
+              <p class="hsc-sub">ANN · RF · SVM · Fuzzy Logic</p>
+            </div>
           </div>
-          <div>
-            <span>Training Lab</span>
-            <small>Generate samples, save labeled rows, and retrain from the site</small>
+          <div class="hero-stat-card">
+            <div class="hsc-icon hsc-teal">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.75" stroke="currentColor" stroke-width="1.4"/><path d="M9 5.5V9L11.5 11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <p class="hsc-val">SHAP + LIME</p>
+              <p class="hsc-sub">Explainability built in</p>
+            </div>
+          </div>
+          <div class="hero-stat-card">
+            <div class="hsc-icon hsc-red">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2.5 13.5V6C2.5 5.17 3.17 4.5 4 4.5H14C14.83 4.5 15.5 5.17 15.5 6V13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M1 13.5H17" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M7 9H11M9 7V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            </div>
+            <div>
+              <p class="hsc-val">Training Lab</p>
+              <p class="hsc-sub">Add data &amp; retrain in-app</p>
+            </div>
           </div>
         </div>
       </div>
+    </header>
 
-      <div class="content-card">
-        {% if not model_ready %}
-        <div class="alert-banner">
-          {{ load_error }}
+    <!-- ══════════════════════════════════════════ ALERT BANNER ═══ -->
+    {% if not model_ready %}
+    <div class="alert-shell">
+      <div class="alert-banner">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0; margin-top:1px;"><path d="M9 1.5L16.5 15H1.5L9 1.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 7V10.5M9 12.5V13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>{{ load_error }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- ════════════════════════════════════════════ MAIN SHELL ═══ -->
+    <main class="page-shell">
+
+      <!-- ──────────────────── PATIENT ASSESSMENT ─────────────────── -->
+      <section class="card" id="section-patient">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="section-badge badge-blue">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="4.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 11C2.5 8.79 4.29 7 6.5 7C8.71 7 10.5 8.79 10.5 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Patient Assessment
+            </div>
+            <h2 class="card-title">Enter Patient Profile</h2>
+            <p class="card-desc">Fill in the clinical data below. Blank fields are auto-imputed from the cleaned dataset median/mode during prediction.</p>
+          </div>
+          <div class="card-actions">
+            <button type="button" class="btn btn-outline btn-sm" data-sample-kind="healthy">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1.5C6.5 1.5 2 4 2 7C2 9.21 4.07 10.5 6.5 10.5C8.93 10.5 11 9.21 11 7C11 4 6.5 1.5 6.5 1.5Z" stroke="currentColor" stroke-width="1.2"/></svg>
+              Healthy Sample
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" data-sample-kind="at_risk">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1L12 11H1L6.5 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6.5 5.5V8M6.5 9.5V10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              At-Risk Sample
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" data-sample-kind="random">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5H11.5M8.5 3.5L11.5 6.5L8.5 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Random Sample
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="clear-form-button">Clear</button>
+          </div>
         </div>
-        {% endif %}
 
         <form id="prediction-form" class="prediction-form">
-          <div class="section-heading">
-            <div>
-              <p class="summary-label">Prediction Input</p>
-              <h2>Patient Inputs</h2>
-            </div>
-            <div class="toolbar-actions">
-              <button type="button" class="secondary-button" data-sample-kind="healthy">Auto Fill Healthy</button>
-              <button type="button" class="secondary-button" data-sample-kind="at_risk">Auto Fill At-Risk</button>
-              <button type="button" class="secondary-button" data-sample-kind="random">Auto Fill Random</button>
-              <button type="button" class="ghost-button" id="clear-form-button">Clear</button>
-            </div>
+
+          <!-- Group: Demographics -->
+          <div class="field-group-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2.25" stroke="currentColor" stroke-width="1.2"/><path d="M1.5 11C1.5 8.52 3.52 6.5 6 6.5C8.48 6.5 10.5 8.52 10.5 11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Demographics &amp; Basic Information
           </div>
-
-          <div class="form-grid">
-            <label>
-              <span>Age <button type="button" class="hint" title="{{ feature_tooltips['age'] }}">i</button></span>
-              <input type="number" name="age" min="1" max="120" />
+          <div class="form-grid col-3">
+            <label class="field-wrap">
+              <span class="field-name">Age <button type="button" class="hint" title="{{ feature_tooltips['age'] }}">?</button></span>
+              <input class="field-input" type="number" name="age" min="1" max="120" placeholder="e.g. 52" />
             </label>
-
-            <label>
-              <span>Sex <button type="button" class="hint" title="{{ feature_tooltips['sex'] }}">i</button></span>
-              <select name="sex">
+            <label class="field-wrap">
+              <span class="field-name">Sex <button type="button" class="hint" title="{{ feature_tooltips['sex'] }}">?</button></span>
+              <select class="field-input" name="sex">
                 <option value="">Select</option>
                 <option value="1">Male</option>
                 <option value="0">Female</option>
               </select>
             </label>
-
-            <label>
-              <span>Chest Pain Type <button type="button" class="hint" title="{{ feature_tooltips['cp'] }}">i</button></span>
-              <select name="cp">
+            <label class="field-wrap">
+              <span class="field-name">Chest Pain Type <button type="button" class="hint" title="{{ feature_tooltips['cp'] }}">?</button></span>
+              <select class="field-input" name="cp">
                 <option value="">Select</option>
-                <option value="0">0 - Typical Angina</option>
-                <option value="1">1 - Atypical Angina</option>
-                <option value="2">2 - Non-anginal Pain</option>
-                <option value="3">3 - Asymptomatic</option>
-              </select>
-            </label>
-
-            <label>
-              <span>Resting Blood Pressure (mmHg) <button type="button" class="hint" title="{{ feature_tooltips['trestbps'] }}">i</button></span>
-              <input type="number" name="trestbps" min="80" max="250" />
-            </label>
-
-            <label>
-              <span>Cholesterol (mg/dl) <button type="button" class="hint" title="{{ feature_tooltips['chol'] }}">i</button></span>
-              <input type="number" name="chol" min="80" max="700" />
-            </label>
-
-            <label>
-              <span>Fasting Blood Sugar &gt; 120mg/dl <button type="button" class="hint" title="{{ feature_tooltips['fbs'] }}">i</button></span>
-              <select name="fbs">
-                <option value="">Select</option>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-              </select>
-            </label>
-
-            <label>
-              <span>Resting ECG <button type="button" class="hint" title="{{ feature_tooltips['restecg'] }}">i</button></span>
-              <select name="restecg">
-                <option value="">Select</option>
-                <option value="0">0 - Normal</option>
-                <option value="1">1 - ST-T Abnormality</option>
-                <option value="2">2 - Left Ventricular Hypertrophy</option>
-              </select>
-            </label>
-
-            <label>
-              <span>Max Heart Rate Achieved <button type="button" class="hint" title="{{ feature_tooltips['thalach'] }}">i</button></span>
-              <input type="number" name="thalach" min="60" max="240" />
-            </label>
-
-            <label>
-              <span>Exercise Induced Angina <button type="button" class="hint" title="{{ feature_tooltips['exang'] }}">i</button></span>
-              <select name="exang">
-                <option value="">Select</option>
-                <option value="1">Yes</option>
-                <option value="0">No</option>
-              </select>
-            </label>
-
-            <label>
-              <span>ST Depression (oldpeak) <button type="button" class="hint" title="{{ feature_tooltips['oldpeak'] }}">i</button></span>
-              <input type="number" name="oldpeak" step="0.1" min="0" max="10" />
-            </label>
-
-            <label>
-              <span>Slope of ST Segment <button type="button" class="hint" title="{{ feature_tooltips['slope'] }}">i</button></span>
-              <select name="slope">
-                <option value="">Select</option>
-                <option value="0">0 - Upsloping</option>
-                <option value="1">1 - Flat</option>
-                <option value="2">2 - Downsloping</option>
-              </select>
-            </label>
-
-            <label>
-              <span>Number of Major Vessels (0-3) <button type="button" class="hint" title="{{ feature_tooltips['ca'] }}">i</button></span>
-              <input type="number" name="ca" min="0" max="3" step="1" />
-            </label>
-
-            <label>
-              <span>Thalassemia <button type="button" class="hint" title="{{ feature_tooltips['thal'] }}">i</button></span>
-              <select name="thal">
-                <option value="">Select</option>
-                <option value="1">1 - Normal</option>
-                <option value="2">2 - Fixed Defect</option>
-                <option value="3">3 - Reversible Defect</option>
+                <option value="0">0 — Typical Angina</option>
+                <option value="1">1 — Atypical Angina</option>
+                <option value="2">2 — Non-anginal Pain</option>
+                <option value="3">3 — Asymptomatic</option>
               </select>
             </label>
           </div>
 
-          <div class="form-actions">
-            <button type="submit" class="predict-button">Predict</button>
+          <!-- Group: Vitals & Labs -->
+          <div class="field-group-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Vitals &amp; Laboratory Values
+          </div>
+          <div class="form-grid col-3">
+            <label class="field-wrap">
+              <span class="field-name">Resting BP (mmHg) <button type="button" class="hint" title="{{ feature_tooltips['trestbps'] }}">?</button></span>
+              <input class="field-input" type="number" name="trestbps" min="80" max="250" placeholder="e.g. 130" />
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Cholesterol (mg/dl) <button type="button" class="hint" title="{{ feature_tooltips['chol'] }}">?</button></span>
+              <input class="field-input" type="number" name="chol" min="80" max="700" placeholder="e.g. 245" />
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Fasting Blood Sugar &gt;120 mg/dl <button type="button" class="hint" title="{{ feature_tooltips['fbs'] }}">?</button></span>
+              <select class="field-input" name="fbs">
+                <option value="">Select</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </label>
+          </div>
+
+          <!-- Group: Cardiac Assessment -->
+          <div class="field-group-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 5H3.5L5 2L7 8.5L8.5 4.5L9.5 5H11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Cardiac Assessment
+          </div>
+          <div class="form-grid col-2">
+            <label class="field-wrap">
+              <span class="field-name">Resting ECG <button type="button" class="hint" title="{{ feature_tooltips['restecg'] }}">?</button></span>
+              <select class="field-input" name="restecg">
+                <option value="">Select</option>
+                <option value="0">0 — Normal</option>
+                <option value="1">1 — ST-T Wave Abnormality</option>
+                <option value="2">2 — Left Ventricular Hypertrophy</option>
+              </select>
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Max Heart Rate Achieved <button type="button" class="hint" title="{{ feature_tooltips['thalach'] }}">?</button></span>
+              <input class="field-input" type="number" name="thalach" min="60" max="240" placeholder="e.g. 150" />
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Exercise Induced Angina <button type="button" class="hint" title="{{ feature_tooltips['exang'] }}">?</button></span>
+              <select class="field-input" name="exang">
+                <option value="">Select</option>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">ST Depression (Oldpeak) <button type="button" class="hint" title="{{ feature_tooltips['oldpeak'] }}">?</button></span>
+              <input class="field-input" type="number" name="oldpeak" step="0.1" min="0" max="10" placeholder="e.g. 1.5" />
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Slope of ST Segment <button type="button" class="hint" title="{{ feature_tooltips['slope'] }}">?</button></span>
+              <select class="field-input" name="slope">
+                <option value="">Select</option>
+                <option value="0">0 — Upsloping</option>
+                <option value="1">1 — Flat</option>
+                <option value="2">2 — Downsloping</option>
+              </select>
+            </label>
+            <label class="field-wrap">
+              <span class="field-name">Major Vessels (0–3) <button type="button" class="hint" title="{{ feature_tooltips['ca'] }}">?</button></span>
+              <input class="field-input" type="number" name="ca" min="0" max="3" step="1" placeholder="0 – 3" />
+            </label>
+          </div>
+
+          <!-- Group: Specialized -->
+          <div class="field-group-label">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1.5C3.52 1.5 1.5 3.52 1.5 6C1.5 8.48 3.52 10.5 6 10.5C8.48 10.5 10.5 8.48 10.5 6C10.5 3.52 8.48 1.5 6 1.5Z" stroke="currentColor" stroke-width="1.2"/><path d="M4 6H8M6 4V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Specialized Tests
+          </div>
+          <div class="form-grid col-2">
+            <label class="field-wrap">
+              <span class="field-name">Thalassemia <button type="button" class="hint" title="{{ feature_tooltips['thal'] }}">?</button></span>
+              <select class="field-input" name="thal">
+                <option value="">Select</option>
+                <option value="1">1 — Normal</option>
+                <option value="2">2 — Fixed Defect</option>
+                <option value="3">3 — Reversible Defect</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="btn btn-primary btn-predict">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7.25" stroke="currentColor" stroke-width="1.5"/><path d="M5 9H7.5L8.5 6L10.5 12L11.5 9L12.2 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Run Risk Prediction
+            </button>
             <p id="status-message" class="status-message"></p>
           </div>
-          <p class="status-message">
-            For prediction and website training rows, blank fields can be auto-filled from the cleaned dataset when needed.
-          </p>
+          <p class="form-note">Blank fields are auto-imputed from the cleaned dataset median/mode values during prediction and training.</p>
+
         </form>
+      </section>
 
-        <section class="training-panel">
-          <div class="section-heading">
-            <div>
-              <p class="summary-label">Training Lab</p>
-              <h2>Save Website Data And Retrain</h2>
+      <!-- ─────────────────────── TRAINING LAB ────────────────────── -->
+      <section class="card training-panel" id="section-training">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="section-badge badge-teal">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 11V4C1.5 3.45 1.95 3 2.5 3H9.5L11.5 5V11C11.5 11.55 11.05 12 10.5 12H2.5C1.95 12 1.5 11.55 1.5 11Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M4 3V5.5H9V3" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+              Training Lab
             </div>
+            <h2 class="card-title">Save Data &amp; Retrain Models</h2>
+            <p class="card-desc">Label patient records from the UI, save them, then trigger fast or full model retraining directly from this platform.</p>
           </div>
+        </div>
 
-          <div class="training-grid">
-            <label>
-              <span>Known Outcome Label</span>
-              <select id="training-target">
-                <option value="1">Heart Disease Present</option>
-                <option value="0">No Heart Disease</option>
-              </select>
-            </label>
-
-            <div class="training-actions">
-              <button type="button" class="secondary-button" id="save-training-row-button">
-                Save Current Inputs As Training Row
-              </button>
-              <button type="button" class="secondary-button retrain-button" id="fast-retrain-button">
-                Fast Retrain
-              </button>
-              <button type="button" class="predict-button retrain-button" id="retrain-button">
-                Full Retrain
-              </button>
-              <button type="button" class="ghost-button danger-ghost-button" id="clear-training-data-button">
-                Remove Added Rows
-              </button>
-            </div>
+        <div class="training-grid">
+          <label class="field-wrap">
+            <span class="field-name">Known Outcome Label</span>
+            <select class="field-input" id="training-target">
+              <option value="1">Heart Disease Present</option>
+              <option value="0">No Heart Disease</option>
+            </select>
+          </label>
+          <div class="training-actions">
+            <button type="button" class="btn btn-outline" id="save-training-row-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 12V3C2.5 2.45 2.95 2 3.5 2H9.5L11.5 4V12C11.5 12.55 11.05 13 10.5 13H3.5C2.95 13 2.5 12.55 2.5 12Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M5 2V4.5H9V2" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M4.5 8H9.5M4.5 10.5H7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Save as Training Row
+            </button>
+            <button type="button" class="btn btn-outline retrain-button" id="fast-retrain-button">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7C2 4.24 4.24 2 7 2C8.98 2 10.7 3.12 11.6 4.76" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 7C12 9.76 9.76 12 7 12C5.02 12 3.3 10.88 2.4 9.24" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10.5 2L12.5 4.5L10.5 5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3.5 12L1.5 9.5L3.5 8.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Fast Retrain
+            </button>
+            <button type="button" class="btn btn-primary retrain-button" id="retrain-button">Full Retrain</button>
+            <button type="button" class="btn btn-danger-ghost danger-ghost-button" id="clear-training-data-button">Remove Added Rows</button>
           </div>
-          <p class="status-message">
-            You can leave fields blank when saving training rows. Missing values are auto-filled from the cleaned dataset before they are added to retraining. When removing rows, the app will ask whether to use fast retrain, full retrain, or no retrain.
-          </p>
+        </div>
+        <p class="form-note" style="margin-top:12px;">Missing fields are auto-filled from the cleaned dataset before adding to retraining. On row removal, you'll be prompted to choose retrain mode.</p>
 
-          <div class="status-card">
-            <div>
-              <p class="summary-label">Website Added Rows</p>
-              <h3 id="user-row-count">{{ dataset_counts['user'] }}</h3>
-            </div>
-            <div class="status-details">
-              <p class="summary-label">Retrain Status</p>
-              <p id="retrain-status-message">Training has not started from the website yet.</p>
-              <p class="timer-line" id="retrain-timer-text">Estimated time remaining: --:--</p>
-            </div>
+        <div class="training-status-grid">
+          <div class="training-stat-block">
+            <p class="summary-label">Website Added Rows</p>
+            <h3 id="user-row-count" class="training-big-num">{{ dataset_counts['user'] }}</h3>
           </div>
-
-          <div class="log-panel">
-            <p class="summary-label">Latest Retrain Logs</p>
-            <pre id="retrain-logs">No retraining logs yet.</pre>
+          <div class="training-info-block">
+            <p class="summary-label">Retrain Status</p>
+            <p id="retrain-status-message" class="training-status-text">Training has not started from the website yet.</p>
+            <p class="timer-line" id="retrain-timer-text">Estimated time remaining: --:--</p>
           </div>
-        </section>
+        </div>
 
-        <section id="results-panel" class="results-panel hidden">
-          <div class="summary-card">
-            <div>
-              <p class="summary-label">Estimated probability</p>
-              <h2 id="probability-output">0% Risk of Heart Disease</h2>
-            </div>
-            <span id="risk-badge" class="risk-badge">Low</span>
+        <div class="log-panel">
+          <p class="log-panel-label">Latest Retrain Logs</p>
+          <pre id="retrain-logs">No retraining logs yet.</pre>
+        </div>
+      </section>
+
+      <!-- ────────────────────── RESULTS PANEL ────────────────────── -->
+      <section id="results-panel" class="results-panel hidden">
+
+        <!-- Summary Row -->
+        <div class="results-summary-row">
+          <div class="results-summary-card">
+            <p class="summary-label">Ensemble Risk Estimate</p>
+            <h2 id="probability-output">0% Risk of Heart Disease</h2>
           </div>
+          <span id="risk-badge" class="risk-badge">Low Risk</span>
+        </div>
 
-          <div class="advice-card">
-            <p class="summary-label">Clinical guidance</p>
-            <p id="advice-output"></p>
+        <!-- Clinical Advice -->
+        <div class="advice-card">
+          <div class="advice-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9.25" stroke="currentColor" stroke-width="1.6"/><path d="M11 7V11.5M11 14V14.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
+          <div>
+            <p class="summary-label">Clinical Guidance</p>
+            <p id="advice-output" class="advice-body"></p>
+          </div>
+        </div>
 
-          <div class="chart-grid">
-            <article class="chart-card">
-              <h3>Risk Gauge</h3>
-              <canvas id="gaugeChart"></canvas>
-            </article>
-            <article class="chart-card">
-              <h3>Model Comparison</h3>
-              <canvas id="barChart"></canvas>
-            </article>
-            <article class="chart-card">
-              <h3>Patient vs Healthy Profile</h3>
-              <canvas id="radarChart"></canvas>
-            </article>
-            <article class="chart-card">
-              <h3>Random Forest SHAP Impact</h3>
-              <p style="font-size: 0.85rem; color: #a2c1cd; margin-bottom: 10px;">Powered by SHAP. Shows how the Random Forest branch reacts to the current patient inputs after feature selection.</p>
-              <canvas id="importanceChart"></canvas>
-            </article>
-            <article class="chart-card full-width">
-              <div class="lime-header">
-                <div>
-                  <h3>Stacked Ensemble LIME Explanation</h3>
-                  <p class="lime-copy">
-                    Generate an on-demand local explanation for the final stacked prediction.
-                    This runs separately so normal predictions stay fast.
-                  </p>
-                </div>
-                <button type="button" class="secondary-button" id="generate-lime-button" disabled>
-                  Generate LIME Explanation
-                </button>
+        <!-- Charts -->
+        <div class="chart-grid">
+          <article class="chart-card">
+            <h3 class="chart-title">Risk Gauge</h3>
+            <canvas id="gaugeChart"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-title">Model Comparison</h3>
+            <canvas id="barChart"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-title">Patient vs. Healthy Profile</h3>
+            <canvas id="radarChart"></canvas>
+          </article>
+          <article class="chart-card">
+            <h3 class="chart-title">Random Forest SHAP Impact</h3>
+            <p class="chart-sub">Powered by SHAP. Shows how the Random Forest branch reacts to the current patient inputs after feature selection.</p>
+            <canvas id="importanceChart"></canvas>
+          </article>
+          <article class="chart-card full-width">
+            <div class="lime-header">
+              <div>
+                <h3 class="chart-title">Stacked Ensemble LIME Explanation</h3>
+                <p class="lime-copy">Generate an on-demand local explanation for the final stacked prediction. This runs separately so normal predictions stay fast.</p>
               </div>
-              <p id="lime-status-message" class="status-message lime-status">
-                Run a prediction first to generate a LIME explanation.
-              </p>
-              <div id="lime-empty-state" class="lime-empty-state">
-                Top factors pushing the final stacked risk higher or lower will appear here.
-              </div>
-              <div id="lime-explanation-list" class="lime-explanation-list hidden"></div>
-            </article>
-          </div>
-        </section>
-
-        <section class="dataset-panel">
-          <div class="section-heading">
-            <div>
-              <p class="summary-label">Data Explorer</p>
-              <h2>Browse The Data Used By The App</h2>
+              <button type="button" class="btn btn-outline" id="generate-lime-button" disabled>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.75" stroke="currentColor" stroke-width="1.2"/><path d="M7 4V7M7 9.5V10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                Generate LIME Explanation
+              </button>
             </div>
-            <div class="toolbar-actions">
-              <div class="count-pill">Raw: <span id="count-raw">{{ dataset_counts['raw'] }}</span></div>
-              <div class="count-pill">Cleaned: <span id="count-cleaned">{{ dataset_counts['cleaned'] }}</span> <small style="opacity: 0.8; margin-left: 4px;">(<span id="count-cleaned-pos" style="color: #ff6b6b;" title="Disease">{{ dataset_counts['cleaned_positive'] }}</span> / <span id="count-cleaned-neg" style="color: #7ce7d6;" title="Healthy">{{ dataset_counts['cleaned_negative'] }}</span>)</small></div>
-              <div class="count-pill">Final Augmented: <span id="count-augmented">{{ dataset_counts['augmented'] }}</span> <small style="opacity: 0.8; margin-left: 4px;">(<span id="count-augmented-pos" style="color: #ff6b6b;" title="Disease">{{ dataset_counts['augmented_positive'] }}</span> / <span id="count-augmented-neg" style="color: #7ce7d6;" title="Healthy">{{ dataset_counts['augmented_negative'] }}</span>)</small></div>
-              <div class="count-pill">Website Added: <span id="count-user">{{ dataset_counts['user'] }}</span> <small style="opacity: 0.8; margin-left: 4px;">(<span id="count-user-pos" style="color: #ff6b6b;" title="Disease">{{ dataset_counts['user_positive'] }}</span> / <span id="count-user-neg" style="color: #7ce7d6;" title="Healthy">{{ dataset_counts['user_negative'] }}</span>)</small></div>
-              <div class="count-pill">Before Augmentation: <span id="count-training-input">{{ dataset_counts['training_input_total'] }}</span> <small style="opacity: 0.8; margin-left: 4px;">(<span id="count-training-input-pos" style="color: #ff6b6b;" title="Disease">{{ dataset_counts['training_input_positive'] }}</span> / <span id="count-training-input-neg" style="color: #7ce7d6;" title="Healthy">{{ dataset_counts['training_input_negative'] }}</span>)</small></div>
-              <div class="count-pill">Last Trained Input: <span id="count-trained-input">{{ dataset_counts['trained_input_total'] }}</span></div>
+            <p id="lime-status-message" class="status-message lime-status">Run a prediction first to generate a LIME explanation.</p>
+            <div id="lime-empty-state" class="lime-empty-state">
+              Top factors pushing the final stacked risk higher or lower will appear here after generation.
             </div>
-          </div>
+            <div id="lime-explanation-list" class="lime-explanation-list hidden"></div>
+          </article>
+        </div>
 
-          <div class="dataset-toolbar">
-            <label class="dataset-select-wrap">
-              <span>Dataset</span>
-              <select id="dataset-select">
-                <option value="augmented">Augmented Training Data</option>
-                <option value="cleaned">Cleaned Base Data</option>
-                <option value="raw">Raw Downloaded Data</option>
-                <option value="user">Website Added Data</option>
-              </select>
-            </label>
+      </section>
 
-            <div class="dataset-nav">
-              <span id="dataset-total-label">Total rows: 0</span>
-              <button type="button" class="ghost-button" id="dataset-prev">Previous</button>
-              <span id="dataset-page-label">Page 1 of 1</span>
-              <button type="button" class="ghost-button" id="dataset-next">Next</button>
+      <!-- ─────────────────────── DATA EXPLORER ───────────────────── -->
+      <section class="card dataset-panel" id="section-data">
+        <div class="card-header" style="flex-wrap: wrap; gap:16px;">
+          <div class="card-header-left">
+            <div class="section-badge badge-navy">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="1.5" width="10" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 4.5H9M4 6.5H9M4 8.5H6.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Data Explorer
             </div>
+            <h2 class="card-title">Browse Training Datasets</h2>
           </div>
-
-          <div class="table-wrap">
-            <table class="dataset-table">
-              <thead id="dataset-head"></thead>
-              <tbody id="dataset-body"></tbody>
-            </table>
-          </div>
-
-          <div class="dataset-legend">
-            <p class="summary-label" style="margin-bottom: 12px;">Dataset Legend & Schema Info</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: #a2c1cd;">
-              <div class="legend-item"><strong style="color: #dcebf0;">Sex:</strong> 1 = Male, 0 = Female</div>
-              <div class="legend-item"><strong style="color: #dcebf0;">Target:</strong> 1 = Disease Present (<span style="color: #ff6b6b;">Red</span>), 0 = Healthy (<span style="color: #7ce7d6;">Green</span>)</div>
-              <div class="legend-item"><strong style="color: #dcebf0;">CP (Chest Pain):</strong> 0 = Typical Angina, 1 = Atypical, 2 = Non-anginal, 3 = Asymptomatic</div>
-              <div class="legend-item"><strong style="color: #dcebf0;">Fasting Blood Sugar:</strong> 1 = True (> 120 mg/dl), 0 = False</div>
-              <div class="legend-item"><strong style="color: #dcebf0;">ExAng (Exercise Angina):</strong> 1 = Yes, 0 = No</div>
+          <div class="dataset-counts-bar">
+            <div class="count-pill">Raw: <strong id="count-raw">{{ dataset_counts['raw'] }}</strong></div>
+            <div class="count-pill">
+              Cleaned: <strong id="count-cleaned">{{ dataset_counts['cleaned'] }}</strong>
+              <small>(<span id="count-cleaned-pos" class="txt-danger">{{ dataset_counts['cleaned_positive'] }}</span>&thinsp;/&thinsp;<span id="count-cleaned-neg" class="txt-safe">{{ dataset_counts['cleaned_negative'] }}</span>)</small>
             </div>
+            <div class="count-pill">
+              Augmented: <strong id="count-augmented">{{ dataset_counts['augmented'] }}</strong>
+              <small>(<span id="count-augmented-pos" class="txt-danger">{{ dataset_counts['augmented_positive'] }}</span>&thinsp;/&thinsp;<span id="count-augmented-neg" class="txt-safe">{{ dataset_counts['augmented_negative'] }}</span>)</small>
+            </div>
+            <div class="count-pill">
+              Website Added: <strong id="count-user">{{ dataset_counts['user'] }}</strong>
+              <small>(<span id="count-user-pos" class="txt-danger">{{ dataset_counts['user_positive'] }}</span>&thinsp;/&thinsp;<span id="count-user-neg" class="txt-safe">{{ dataset_counts['user_negative'] }}</span>)</small>
+            </div>
+            <div class="count-pill">
+              Pre-Aug: <strong id="count-training-input">{{ dataset_counts['training_input_total'] }}</strong>
+              <small>(<span id="count-training-input-pos" class="txt-danger">{{ dataset_counts['training_input_positive'] }}</span>&thinsp;/&thinsp;<span id="count-training-input-neg" class="txt-safe">{{ dataset_counts['training_input_negative'] }}</span>)</small>
+            </div>
+            <div class="count-pill">Last Trained: <strong id="count-trained-input">{{ dataset_counts['trained_input_total'] }}</strong></div>
           </div>
-        </section>
+        </div>
+
+        <div class="dataset-toolbar">
+          <label class="dataset-select-wrap">
+            <span class="field-name">Dataset</span>
+            <select class="field-input" id="dataset-select">
+              <option value="augmented">Augmented Training Data</option>
+              <option value="cleaned">Cleaned Base Data</option>
+              <option value="raw">Raw Downloaded Data</option>
+              <option value="user">Website Added Data</option>
+            </select>
+          </label>
+          <div class="dataset-nav">
+            <span id="dataset-total-label" class="dataset-total-lbl">Total rows: 0</span>
+            <button type="button" class="btn btn-ghost btn-sm" id="dataset-prev">← Prev</button>
+            <span id="dataset-page-label" class="dataset-page-lbl">Page 1 of 1</span>
+            <button type="button" class="btn btn-ghost btn-sm" id="dataset-next">Next →</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="dataset-table">
+            <thead id="dataset-head"></thead>
+            <tbody id="dataset-body"></tbody>
+          </table>
+        </div>
+
+        <div class="dataset-legend">
+          <p class="summary-label">Schema Legend</p>
+          <div class="legend-items">
+            <div class="legend-item"><strong>Sex:</strong> 1 = Male, 0 = Female</div>
+            <div class="legend-item"><strong>Target:</strong> 1 = Disease (<span class="txt-danger">Red</span>), 0 = Healthy (<span class="txt-safe">Green</span>)</div>
+            <div class="legend-item"><strong>CP:</strong> 0 = Typical Angina · 1 = Atypical · 2 = Non-anginal · 3 = Asymptomatic</div>
+            <div class="legend-item"><strong>FBS:</strong> 1 = True (&gt;120 mg/dl), 0 = False</div>
+            <div class="legend-item"><strong>ExAng:</strong> 1 = Yes, 0 = No</div>
+          </div>
+        </div>
+      </section>
+
+    </main><!-- /page-shell -->
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;margin-right:6px;"><path d="M7 12.5C7 12.5 1.5 9 1.5 5C1.5 3.07 3.07 1.5 5 1.5C5.97 1.5 6.85 1.87 7.52 2.5L7 2.97L6.48 2.5C5.81 1.87 4.93 1.5 4 1.5C2.07 1.5 0.5 3.07 0.5 5C0.5 9 6 12.5 6 12.5" stroke="none" fill="#EF5350" opacity="0.5"/></svg>
+          <strong style="color:rgba(255,255,255,0.5)">CardioPredict</strong> — Clinical Decision Support Platform &nbsp;·&nbsp; For educational and research purposes only. Not a substitute for professional medical advice.
+        </p>
       </div>
-    </div>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
   </body>

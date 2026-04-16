@@ -1055,6 +1055,7 @@ def save_training_data():
         return jsonify(
             {
                 "message": message,
+                
                 "user_rows": get_user_row_count(),
                 "counts": counts,
                 "imputed_fields": imputed_fields,
