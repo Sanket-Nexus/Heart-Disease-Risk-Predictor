@@ -457,6 +457,57 @@ function updateSummary(probability, riskLevel, advice) {
   riskBadge.classList.add(`risk-${riskLevel.toLowerCase()}`);
 
   adviceOutput.textContent = advice;
+
+
+
+}
+
+function renderRecommendations(recommendations, riskLevel) {
+  const recCard = document.getElementById("recommendation-card");
+  const recList = document.getElementById("recommendation-list");
+
+  if (!recCard || !recList) return;
+
+  // reset list
+  recList.innerHTML = "";
+
+  // reset theme classes
+  recCard.classList.remove("high-risk", "moderate-risk", "low-risk");
+
+  // apply theme based on risk
+  if (riskLevel === "High") {
+    recCard.classList.add("high-risk");
+  } else if (riskLevel === "Moderate") {
+    recCard.classList.add("moderate-risk");
+  } else {
+    recCard.classList.add("low-risk");
+  }
+
+  // hide if empty
+  if (!recommendations || recommendations.length === 0) {
+    recCard.style.display = "none";
+    return;
+  }
+
+  // render list
+  recommendations.forEach((rec) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>${rec}</span>`;
+    recList.appendChild(li);
+  });
+
+  // show card
+  recCard.style.display = "block";
+
+  // ✅ ADD ANIMATION HERE
+  recCard.style.opacity = "0";
+  recCard.style.transform = "translateY(10px)";
+
+  setTimeout(() => {
+    recCard.style.transition = "all 0.3s ease";
+    recCard.style.opacity = "1";
+    recCard.style.transform = "translateY(0)";
+  }, 50);
 }
 
 function buildPayload(formElement, options = {}) {
@@ -629,6 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       datasetState.latestPredictionPayload = predictionPayload;
       updateSummary(response.probability, response.risk_level, response.advice);
+     renderRecommendations(response.recommendations, response.risk_level);
       createGaugeChart(response.probability, response.risk_level);
       createBarChart(response.model_predictions);
       createRadarChart(response.profile_comparison);

@@ -548,6 +548,43 @@ def _risk_level(probability):
         return "Moderate"
     return "High"
 
+def generate_recommendations(patient, probability):
+    recs = []
+    risk = _risk_level(probability)
+
+    # Risk-based
+    if risk == "High":
+        recs.append("Immediate consultation with a cardiologist is strongly recommended.")
+        recs.append("Further diagnostic tests such as ECG, echocardiogram, or stress testing should be performed.")
+
+    elif risk == "Moderate":
+        recs.append("Schedule a clinical evaluation to assess cardiovascular health.")
+        recs.append("Monitor blood pressure and cholesterol regularly.")
+
+    else:
+        recs.append("Maintain a healthy lifestyle with regular monitoring.")
+
+    # Feature-based rules
+    if patient["trestbps"] > 140:
+        recs.append("Elevated blood pressure detected. Reduce salt intake and monitor hypertension.")
+
+    if patient["chol"] > 240:
+        recs.append("High cholesterol level. Consider lipid profile evaluation and dietary changes.")
+
+    if patient["thalach"] < 100:
+        recs.append("Low maximum heart rate observed. Possible reduced cardiac efficiency.")
+
+    if patient["exang"] == 1:
+        recs.append("Exercise-induced angina detected. Avoid heavy physical exertion until evaluated.")
+
+    if patient["oldpeak"] > 2:
+        recs.append("Significant ST depression observed. Further cardiac investigation recommended.")
+
+    if patient["age"] > 55:
+        recs.append("Age-related cardiovascular risk is elevated. Routine screening is advised.")
+
+    return recs
+
 
 def _safe_probability(value):
     return max(0.0, min(1.0, float(value)))
@@ -945,18 +982,21 @@ def predict():
             "SVM": round(svm_probability, 4),
         }
         final_probability = round(_safe_probability(prediction_outputs["final_probabilities"][0]), 4)
+        recommendations = generate_recommendations(patient_record, final_probability)
         risk_level = _risk_level(final_probability)
 
         healthy_frame = pd.DataFrame(
             [ARTIFACTS["healthy_average"]],
             columns=ARTIFACTS["all_features"],
         )
+
         healthy_scaled = ARTIFACTS["scaler"].transform(healthy_frame)[0]
         feature_importance = _build_feature_importance(patient_scaled)
 
         response = {
             "probability": final_probability,
             "risk_level": risk_level,
+            "recommendations": recommendations if recommendations else [],
             "model_predictions": model_predictions,
             "feature_importance": feature_importance,
             "advice": ADVICE_BY_LEVEL[risk_level],
@@ -983,6 +1023,7 @@ def predict():
                     "We could not generate a prediction right now. "
                     f"Please verify your inputs and try again. Details: {exc}"
                 )
+                
             }
         ), 500
 
