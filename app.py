@@ -568,6 +568,8 @@ def generate_recommendations(patient, probability):
     if patient["trestbps"] > 140:
         recs.append("Elevated blood pressure detected. Reduce salt intake and monitor hypertension.")
 
+
+
     if patient["chol"] > 240:
         recs.append("High cholesterol level. Consider lipid profile evaluation and dietary changes.")
 
